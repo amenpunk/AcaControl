@@ -86,7 +86,7 @@ create table signos(
 )
 
 CREATE table consulta(
-    id_consulta int,
+    id_consulta int IDENTITY(1,1),
     id_medicion int,
     id_doctor int,
     asunto varchar(450),
@@ -103,10 +103,64 @@ CREATE table consulta(
 
 
 CREATE TABLE diagnostico(
-    id_diagnostico int,
+    id_diagnostico int IDENTITY(1,1) not null,
     id_cie VARCHAR(250),
     id_consulta int,
     
     CONSTRAINT pk_diag PRIMARY KEY(id_diagnostico),
     CONSTRAINT fk_con FOREIGN KEY (id_consulta) REFERENCES consulta(id_consulta)
+)
+
+create table orden_lab(
+    id_orden int IDENTITY(1,1) not null,
+    nombre_examen VARCHAR(250),
+    id_consulta int,
+    CONSTRAINT pk_lab PRIMARY KEY(id_orden),
+    CONSTRAINT fk_cons FOREIGN KEY(id_consulta) REFERENCES consulta(id_consulta),
+)
+
+create table factura(
+    num_factura int IDENTITY(1,1) not null,
+    fecha date,
+    id_expediente int,
+    
+    CONSTRAINT pk_num PRIMARY KEY(num_factura),
+    CONSTRAINT fk_exp FOREIGN KEY(id_expediente) REFERENCES expediente(id_expediente)
+)
+
+create table detalle_fac(
+    num_detalle int IDENTITY(1,1) not null,
+    num_factura int,
+    id_producto int,
+    cantidad int,
+    precio FLOAT
+
+    CONSTRAINT pk_det PRIMARY KEY(num_detalle),
+    CONSTRAINT fk_num FOREIGN KEY(num_factura) REFERENCES factura(num_factura)
+)
+
+CREATE table receta(
+    id_receta int IDENTITY(1,1) not null,
+    id_consulta int,
+
+    CONSTRAINT pk_res PRIMARY KEY(id_receta),
+    CONSTRAINT fk_cons FOREIGN KEY(id_consulta) REFERENCES consulta(id_consulta),
+)
+
+create table des_receta(
+    id_descripcion int IDENTITY(1,1) not null,
+    id_receta int,
+    id_medicamento int,
+    cantidad float,
+    dosis varchar(250),
+
+    CONSTRAINT pk_des PRIMARY KEY(id_descripcion),
+    CONSTRAINT fk_rec FOREIGN KEY(id_receta) REFERENCES receta(id_receta),
+    CONSTRAINT fk_med FOREIGN KEY(id_medicamento) REFERENCES id_medicamento(id_medicamento),
+)
+
+create table id_medicamento(
+    id_medicamento int IDENTITY(1,1) not null,
+    nombre varchar(250),
+    CONSTRAINT pk_med PRIMARY KEY(id_medicamento)    
 )
